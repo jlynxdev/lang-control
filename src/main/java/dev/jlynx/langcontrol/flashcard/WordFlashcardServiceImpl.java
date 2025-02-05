@@ -21,7 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,6 +51,18 @@ public class WordFlashcardServiceImpl implements WordFlashcardService {
         this.userProfileService = userProfileService;
     }
 
+    /**
+     * Creates a new word flashcard associated with a specific deck, ensuring the current user has access to the deck.
+     * <p>
+     * This method validates the ownership of the deck by the current user and establishes the necessary associations
+     * between the flashcard and the provided data. Upon successful creation, the new flashcard is stored in the repository
+     * and a response containing an overview of the flashcard is returned.
+     *
+     * @param body the request object containing the details for creating the flashcard. It includes:
+     * @return an instance of {@link WordFlashcardOverviewResponse} representing the created flashcard.
+     * @throws AssetNotFoundException   if the deck with the provided {@code deckId} cannot be found.
+     * @throws AccessForbiddenException if the current user does not have access to the specified deck.
+     */
     @Transactional
     @Override
     public WordFlashcardOverviewResponse createNewFlashcard(CreateWordFlashcardRequest body) {
@@ -73,6 +88,19 @@ public class WordFlashcardServiceImpl implements WordFlashcardService {
         return WordFlashcardOverviewResponse.fromEntity(flashcardToCreate);
     }
 
+    /**
+     * Creates a new word flashcard in "Zen Mode".
+     *
+     * <p>This method validates the associated deck's ownership by the current user, retrieves
+     * translations for the target word and constructs a new flashcard with the provided and derived data.
+     * The newly created flashcard is then saved to the repository and returned in the response.
+     *
+     * @param body The {@link CreateWordFlashcardZenModeRequest} containing the target word, deck ID
+     *             and part of speech.
+     * @return A {@link WordFlashcardOverviewResponse} containing the data of the newly created flashcard.
+     * @throws AssetNotFoundException   If the requested deck is not found.
+     * @throws AccessForbiddenException If the deck does not belong to the current user.
+     */
     @Transactional
     @Override
     public WordFlashcardOverviewResponse createNewFlashcardZenMode(CreateWordFlashcardZenModeRequest body) {
@@ -83,11 +111,11 @@ public class WordFlashcardServiceImpl implements WordFlashcardService {
         }
 
         String targetSideTranslations = dictionary.getTranslationsList(
-                body.targetWord(),
-                retrievedDeck.getTargetLang(),
-                retrievedDeck.getSourceLang(),
-                body.partOfSpeech() == null ? PartOfSpeech.OTHER : body.partOfSpeech()
-        ).stream()
+                        body.targetWord(),
+                        retrievedDeck.getTargetLang(),
+                        retrievedDeck.getSourceLang(),
+                        body.partOfSpeech() == null ? PartOfSpeech.OTHER : body.partOfSpeech()
+                ).stream()
                 .distinct()
                 .limit(3)
                 .collect(Collectors.joining("; "));
@@ -108,6 +136,18 @@ public class WordFlashcardServiceImpl implements WordFlashcardService {
         return WordFlashcardOverviewResponse.fromEntity(flashcardToCreate);
     }
 
+    /**
+     * Retrieves a {@link WordFlashcard} by its unique identifier.
+     *
+     * <p>This method ensures that the current user has permission to access the flashcard.
+     * If the flashcard is not found or the user does not have access, appropriate exceptions
+     * are thrown.
+     *
+     * @param id The unique identifier of the flashcard.
+     * @return The {@link WordFlashcard} associated with the given id.
+     * @throws AssetNotFoundException   if the flashcard is not found.
+     * @throws AccessForbiddenException if the current user does not have access to the flashcard.
+     */
     @Override
     public WordFlashcard getCardById(long id) {
         WordFlashcard found = wordFlashcardRepository.findById(id)
@@ -120,12 +160,26 @@ public class WordFlashcardServiceImpl implements WordFlashcardService {
         return found;
     }
 
+    /**
+     * Retrieves an overview of a word flashcard by its ID.
+     *
+     * @param id the unique identifier of the word flashcard
+     * @return a {@link WordFlashcardOverviewResponse} containing the overview details of the word flashcard
+     */
     @Override
     public WordFlashcardOverviewResponse getCardOverviewById(long id) {
         WordFlashcard card = this.getCardById(id);
         return WordFlashcardOverviewResponse.fromEntity(card);
     }
 
+    /**
+     * Computes the interval forecasts for the specified flashcard based on its current state
+     * and rating types using the {@link RatingType} and {@link IntervalForecastResponse}.
+     *
+     * @param cardId the unique identifier of the flashcard to calculate interval forecasts for.
+     * @return an {@link IntervalForecastResponse} object containing interval values calculated
+     * for each rating type.
+     */
     @Override
     public IntervalForecastResponse getIntervalForecasts(long cardId) {
         WordFlashcard card = this.getCardById(cardId);
@@ -139,6 +193,17 @@ public class WordFlashcardServiceImpl implements WordFlashcardService {
         return forecast;
     }
 
+    /**
+     * Updates an existing flashcard identified by its ID with new word details.
+     * <p>
+     * This method ensures the flashcard belongs to the current user's profile before updating.
+     * If the flashcard is not found or access is unauthorised, appropriate exceptions are thrown.
+     *
+     * @param cardId the unique identifier of the flashcard to be updated
+     * @param body   an instance of {@link UpdateWordFlashcardRequest} containing updated flashcard details:
+     * @throws AssetNotFoundException   if the flashcard with the specified ID does not exist
+     * @throws AccessForbiddenException if the current user does not have permissions to modify the specified flashcard
+     */
     @Override
     public void updateFlashcard(long cardId, UpdateWordFlashcardRequest body) {
         WordFlashcard card = wordFlashcardRepository.findById(cardId)
@@ -160,6 +225,11 @@ public class WordFlashcardServiceImpl implements WordFlashcardService {
         );
     }
 
+    /**
+     * Deletes a flashcard from the repository based on its unique identifier.
+     *
+     * @param flashcardId the unique identifier of the flashcard to be deleted
+     */
     @Transactional
     @Override
     public void deleteFlashcard(long flashcardId) {
@@ -167,6 +237,17 @@ public class WordFlashcardServiceImpl implements WordFlashcardService {
         wordFlashcardRepository.delete(foundCard);
     }
 
+    /**
+     * Retrieves all {@link WordFlashcardView} instances that are ready for view in a given deck.
+     * <p>
+     * This method ensures the current user has the necessary permissions to access the specified deck
+     * and fetches flashcards that are ready for viewing based on the current UTC time.
+     *
+     * @param deckId the unique identifier of the deck from which flashcards are to be retrieved.
+     * @return a list of {@link WordFlashcardView} instances representing the flashcards ready for viewing.
+     * @throws AssetNotFoundException   if the deck with the specified {@code deckId} is not found.
+     * @throws AccessForbiddenException if the current user does not have permission to access the deck.
+     */
     @Override
     public List<WordFlashcardView> fetchAllReadyForViewCardsByDeck(long deckId) {
         Deck deck = deckRepository.findById(deckId).orElseThrow(AssetNotFoundException::new);
@@ -185,6 +266,24 @@ public class WordFlashcardServiceImpl implements WordFlashcardService {
         return flashcards;
     }
 
+    /**
+     * Fetches a list of {@link WordFlashcardView} objects that are ready for review
+     * for a specific deck. The list is retrieved based on the provided sorting criteria
+     * and limited to a given number of results.
+     *
+     * <p>This method ensures the current user has access to the specified deck
+     * and enforces the result set size to be at least one.
+     *
+     * @param deckId The unique identifier of the deck to fetch word flashcards from.
+     * @param limit  The maximum number of flashcards to retrieve. Must be greater than zero.
+     * @param sortBy The field by which the flashcards should be sorted.
+     * @param order  The order in which the flashcards should be sorted,
+     *               either {@code SortOrder.ASC} for ascending or {@code SortOrder.DESC} for descending.
+     * @return A list of {@link WordFlashcardView} objects ready for review, sorted and limited as specified.
+     * @throws IllegalArgumentException If the {@code limit} is less than one.
+     * @throws AssetNotFoundException   If the deck with the given {@code deckId} does not exist.
+     * @throws AccessForbiddenException If the current user does not have permission to access the specified deck.
+     */
     @Override
     public List<WordFlashcardView> fetchReadyForView(long deckId, int limit, SpacedRepetitionSortBy sortBy, SortOrder order) {
         if (limit < 1) {
@@ -208,10 +307,19 @@ public class WordFlashcardServiceImpl implements WordFlashcardService {
     }
 
     /**
-     * {@inheritDoc}
+     * Retrieves a paginated list of flashcards, optionally filtered by a specific deck,
+     * and sorted according to the specified criteria.
+     * Ensures that the flashcards belong to the currently authenticated user.
      *
-     * @throws AssetNotFoundException if deck with {@code deckId} does not exist
-     * @throws AccessForbiddenException if deck with {@code deckId} does not belong to the current {@link UserProfile}
+     * @param deckId   optional identifier of the deck for which flashcards need to be retrieved;
+     *                 if empty, retrieves flashcards across all decks for the user
+     * @param pageNum  the page number (zero-based) to retrieve
+     * @param pageSize the number of flashcards per page
+     * @param sortBy   the field by which to sort the flashcards; if {@code null}, no sorting is applied
+     * @param order    the sorting order, either ascending or descending, defined by {@link SortOrder}
+     * @return a {@link Page} of {@link WordFlashcardView} objects representing the retrieved flashcards
+     * @throws AssetNotFoundException   if the specified deck does not exist
+     * @throws AccessForbiddenException if the specified deck does not belong to the authenticated user
      */
     @Override
     public Page<WordFlashcardView> getFlashcards(Optional<Long> deckId, int pageNum, int pageSize, FlashcardSortBy sortBy, SortOrder order) {

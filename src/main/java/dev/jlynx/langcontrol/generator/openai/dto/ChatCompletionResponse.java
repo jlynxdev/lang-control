@@ -4,6 +4,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
+/**
+ * Represents a response to a chat completion request.
+ * This class is designed to be used with OpenAI's chat-based models for conversational AI.
+ * <p>
+ *
+ * @see <a href="https://platform.openai.com/docs/api-reference/chat/object">
+ * OpenAI's chat completion object documentation
+ * </a>
+ */
 public record ChatCompletionResponse(
         String id,
         List<Choice> choices,
@@ -19,13 +28,15 @@ public record ChatCompletionResponse(
             String finishReason,
             int index,
             ChatResponseMessage message
-    ) {}
+    ) {
+    }
 
     public record ChatResponseMessage(
             ChatMessageRole role,
             String content,
             String refusal
-    ) {}
+    ) {
+    }
 
     public record UsageStatistics(
             @JsonProperty("completion_tokens")
@@ -34,5 +45,6 @@ public record ChatCompletionResponse(
             int promptTokens,
             @JsonProperty("total_tokens")
             int totalTokens
-    ) {}
+    ) {
+    }
 }

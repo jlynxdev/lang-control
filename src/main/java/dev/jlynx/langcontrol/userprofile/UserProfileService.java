@@ -4,6 +4,10 @@ import dev.jlynx.langcontrol.account.dto.UpdateAccountAndUserProfileRequest;
 import dev.jlynx.langcontrol.exception.ValuesTheSameException;
 import dev.jlynx.langcontrol.userprofile.dto.UserProfileOverview;
 
+/**
+ * Defines operations for managing and retrieving user profile information
+ * associated with the currently authenticated account.
+ */
 public interface UserProfileService {
 
     UserProfile retrieveCurrentProfileEntity();

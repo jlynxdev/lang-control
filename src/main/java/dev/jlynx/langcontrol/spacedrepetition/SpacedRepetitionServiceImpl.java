@@ -24,6 +24,17 @@ public class SpacedRepetitionServiceImpl implements SpacedRepetitionService {
         this.spacedRepetitionAlgorithm = spacedRepetitionAlgorithm;
     }
 
+    /**
+     * Applies a rating to a flashcard, updates its state in the spaced repetition system
+     * and returns a response with the updated information.
+     *
+     * @param flashcardId the ID of the flashcard to which the rating is being applied; must not be {@code null}.
+     * @param ratingType  the {@link RatingType} representing the user's evaluation of the flashcard;
+     *                    must not be {@code null}.
+     * @return a {@link FlashcardRatingResponse} containing the flashcard ID and flags indicating whether
+     * it switched to review mode or learn mode.
+     * @throws IllegalArgumentException if {@code flashcardId} or {@code ratingType} is {@code null}.
+     */
     @Transactional
     @Override
     public FlashcardRatingResponse applyRating(Long flashcardId, RatingType ratingType) {

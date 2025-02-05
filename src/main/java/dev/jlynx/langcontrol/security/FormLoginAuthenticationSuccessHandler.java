@@ -12,10 +12,26 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import java.io.IOException;
 
+/**
+ * Handles successful authentication events triggered after a user logs in via a form-based login.
+ * Implements {@link AuthenticationSuccessHandler}.
+ * <p>
+ * On successful authentication, returns a JSON response with a success message
+ * and sets the HTTP status to {@code 200 OK}.
+ */
 public class FormLoginAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(FormLoginAuthenticationSuccessHandler.class);
 
+    /**
+     * Handles actions after the user's successful authentication.
+     *
+     * @param request        the {@link HttpServletRequest} representing the client's request during authentication
+     * @param response       the {@link HttpServletResponse} used to send the success response
+     * @param authentication the {@link Authentication} object containing authenticated user's details
+     * @throws IOException      if an input or output exception occurs during the response handling
+     * @throws ServletException if the request could not be handled
+     */
     @Override
     public void onAuthenticationSuccess(
             HttpServletRequest request,

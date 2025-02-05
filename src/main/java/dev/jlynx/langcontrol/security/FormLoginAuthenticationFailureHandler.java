@@ -16,10 +16,42 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 
 import java.io.IOException;
 
+/**
+ * Handles authentication failures in form login processes.
+ *
+ * <p>
+ * This class implements {@link AuthenticationFailureHandler} to provide custom behaviour
+ * for processing authentication-related exceptions during login attempts. It responds with
+ * appropriate HTTP status codes and JSON error responses based on the exception type.
+ * </p>
+ *
+ * <ul>
+ * <li>{@link BadCredentialsException}: Returns HTTP 401 (Unauthorised) with a relevant error message.</li>
+ * <li>{@link LockedException}: Returns HTTP 403 (Forbidden) with an "account locked" message.</li>
+ * <li>{@link DisabledException}: Returns HTTP 403 (Forbidden) with an "account disabled" message.</li>
+ * <li>Other exceptions: Returns HTTP 401 (Unauthorised) with a generic error message.</li>
+ * </ul>
+ * <p>
+ * The response body is standardised using {@link ErrorResponseBody} with details such as status,
+ * timestamp, request URI and error descriptions.
+ *
+ * @see SecurityConfig
+ * @see ErrorResponseBody
+ */
 public class FormLoginAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(FormLoginAuthenticationFailureHandler.class);
 
+    /**
+     * Handles authentication failure scenarios by generating an appropriate JSON response
+     * and setting the corresponding HTTP status code based on the type of exception.
+     *
+     * @param request  the {@link HttpServletRequest} object representing the client's request
+     * @param response the {@link HttpServletResponse} object for sending the response back to the client
+     * @param ex       the {@link AuthenticationException} thrown during the authentication process
+     * @throws IOException      if an input or output error occurs while writing the response
+     * @throws ServletException if a servlet-specific error occurs
+     */
     @Override
     public void onAuthenticationFailure(
             HttpServletRequest request,

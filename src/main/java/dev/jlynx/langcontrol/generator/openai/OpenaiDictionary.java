@@ -1,11 +1,11 @@
 package dev.jlynx.langcontrol.generator.openai;
 
-import dev.jlynx.langcontrol.lang.LanguageCode;
 import dev.jlynx.langcontrol.flashcard.PartOfSpeech;
 import dev.jlynx.langcontrol.generator.Dictionary;
 import dev.jlynx.langcontrol.generator.openai.dto.ChatCompletionRequest;
 import dev.jlynx.langcontrol.generator.openai.dto.ChatCompletionRequest.ChatMessage;
 import dev.jlynx.langcontrol.generator.openai.dto.ChatMessageRole;
+import dev.jlynx.langcontrol.lang.LanguageCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,23 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Implementation of the {@link Dictionary} interface that leverages the OpenAI API to generate
+ * translations of words or short phrases between specified languages.
+ * <p>
+ * This class utilises the OpenAI's {@code gpt-4o-mini} language model to provide a list of
+ * translations based on the provided {@link LanguageCode} and {@link PartOfSpeech}. It relies on
+ * {@link OpenaiClient} to interact with the OpenAI API for generating responses.
+ * <p>
+ * Translation generation assumes the following constraints:
+ * <ul>
+ *     <li>The source and target languages must be distinct; otherwise, an exception is raised.</li>
+ *     <li>The translations are derived based on a specific grammatical category defined via {@link PartOfSpeech}.</li>
+ * </ul>
+ * <p>
+ * The response is parsed to extract unique translations returned by the AI model and these are
+ * provided as the output.
+ */
 @Service
 public class OpenaiDictionary implements Dictionary {
 
@@ -25,6 +42,12 @@ public class OpenaiDictionary implements Dictionary {
 
     private final OpenaiClient client;
 
+    /**
+     * Constructs a new instance of {@link OpenaiDictionary} by injecting the required {@link OpenaiClient}.
+     *
+     * @param client the {@link OpenaiClient} instance used to interact with the OpenAI API for
+     *               generating translations between different languages.
+     */
     @Autowired
     public OpenaiDictionary(OpenaiClient client) {
         this.client = client;
@@ -49,7 +72,7 @@ public class OpenaiDictionary implements Dictionary {
         String systemMsgContent = "You're a creative and helpful assistant";
         String userMsgContent = String.format(
                 "Give me a comma-separated list of %s translations of the following %s %s: \"%s\". " +
-                "Don't write any words in %s but only the %s translations.",
+                        "Don't write any words in %s but only the %s translations.",
                 langTo, langFrom, pos, sourceText, langFrom, langTo
         );
 

@@ -27,7 +27,7 @@ public enum LanguageCode {
     LATVIAN("lv", "Latvian"),
     LITHUANIAN("lt", "Lithuanian"),
     SLOVAK("sk", "Slovak"),
-    ESTONIAN("et",  "Estonian"),
+    ESTONIAN("et", "Estonian"),
     FINNISH("fi", "Finnish"),
     GREEK("el", "Greek"),
     SLOVENIAN("sl", "Slovenian"),

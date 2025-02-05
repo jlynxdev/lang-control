@@ -8,6 +8,14 @@ import lombok.Setter;
 
 import java.util.Objects;
 
+/**
+ * Represents a word-based flashcard that allows the user to learn vocabulary in a target language.
+ * This class extends {@link Flashcard} and includes additional details specific to words and examples.
+ * <p>
+ * Each flashcard contains information about a word or phrase in a source language (known by the user)
+ * and its corresponding word or phrase in a target language (being learned). Optional parts of speech
+ * and example sentences may also be included.
+ */
 @Getter @Setter
 @Entity
 @DiscriminatorValue("word")

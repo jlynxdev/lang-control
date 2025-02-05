@@ -22,14 +22,44 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * A Spring {@link Component} that executes at application startup, implementing
+ * the {@link ApplicationRunner} interface.
+ *
+ * <p>This class ensures the initial setup of the application by creating required
+ * roles and an admin account if they do not already exist. Configuration properties
+ * for the admin account are injected from the environment variables using {@code @Value}.
+ *
+ * <p>Dependencies:
+ * <ul>
+ *   <li>{@link RoleRepository} to manage roles.</li>
+ *   <li>{@link UserSettingsRepository} to manage user settings.</li>
+ *   <li>{@link AccountRepository} to manage user accounts.</li>
+ *   <li>{@link PasswordEncoder} to encode the admin password.</li>
+ * </ul>
+ */
 @Component
 public class ApplicationStartupRunner implements ApplicationRunner {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApplicationStartupRunner.class);
 
+    /**
+     * Stores the username of the admin account, retrieved from the
+     * external configuration property {@code admin.properties.username}.
+     *
+     * <p>Used during application startup by {@link ApplicationStartupRunner}
+     * to verify the existence of the admin account or to initialise it if necessary.
+     */
     @Value("${admin.properties.username}")
     private String adminUsername;
 
+    /**
+     * Holds the password for the admin account used during application startup.
+     * <p>
+     * Configured via the {@code admin.properties.password} property in the application's
+     * configuration files. This value is used to create or verify the admin account
+     * upon initialisation.
+     */
     @Value("${admin.properties.password}")
     private String adminPassword;
 
@@ -51,6 +81,26 @@ public class ApplicationStartupRunner implements ApplicationRunner {
         this.encoder = encoder;
     }
 
+    /**
+     * Executes logic during application startup to ensure the admin account and roles are created.
+     * If an admin account already exists, no further processing occurs.
+     *
+     * <p>The method performs the following actions:
+     * <ul>
+     *   <li>Checks whether an admin account with {@code adminUsername} exists
+     *   using {@link AccountRepository#existsByUsername}.</li>
+     *   <li>Ensures that {@code ADMIN} and {@code USER} roles exist in the database,
+     *   creating them if necessary using {@link RoleRepository#findByValue}.</li>
+     *   <li>Creates a new admin {@link Account} with the specified {@code adminUsername} and {@code adminPassword},
+     *   linking it to the required roles, a {@link UserProfile} and {@link UserSettings}.</li>
+     *   <li>Saves the constructed {@code Account}, {@code UserProfile} and {@code UserSettings} instances
+     *   to the database.</li>
+     * </ul>
+     *
+     * @param args encapsulates command-line arguments passed to the application
+     *             (unused in this implementation, but must not be {@code null}).
+     * @throws Exception if any unexpected issue occurs during execution.
+     */
     @Transactional
     @Override
     public void run(ApplicationArguments args) throws Exception {

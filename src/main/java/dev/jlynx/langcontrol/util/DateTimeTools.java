@@ -5,13 +5,18 @@ import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.LocalDateTime;
 
+/**
+ * Provides utility methods for handling date and time operations in the application.
+ */
 @Service
 public class DateTimeTools {
 
     /**
-     * Makes use of the system's UTC clock.
+     * Retrieves the current UTC date and time.
      *
-     * @return the current {@code LocalDateTime} in UTC
+     * <p>Makes use of the system's UTC clock.</p>
+     *
+     * @return the current {@link LocalDateTime} in UTC
      */
     public LocalDateTime getNowUtc() {
         return LocalDateTime.now(Clock.systemUTC());

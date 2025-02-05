@@ -7,13 +7,37 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+
 /**
- * A data transfer object which represents the body of an account registration request. It contains detailed
- * account creation validation constraints.
+ * Represents the body of a registration request containing the user's
+ * {@code username}, {@code password} and {@code firstName}.
  *
- * @param username the desired username of the account being registered
- * @param password the account's password set by user
- * @param firstName the user's first name
+ * <p>Each field is validated via annotations to ensure compliance with specific
+ * constraints defined in {@link Constraints} and error messages provided by {@link ErrorMsg}.
+ *
+ * <ul>
+ *   <li><strong>Username:</strong>
+ *   <ul>
+ *     <li>Cannot be {@code null} or blank.</li>
+ *     <li>Must be between {@link Constraints#USERNAME_MIN} and {@link Constraints#USERNAME_MAX} characters.</li>
+ *     <li>Must adhere to the regex defined in {@link Constraints#USERNAME_REGEX}.</li>
+ *   </ul>
+ *   </li>
+ *   <li><strong>Password:</strong>
+ *   <ul>
+ *     <li>Cannot be {@code null} or blank.</li>
+ *     <li>Must be between {@link Constraints#PWD_MIN} and {@link Constraints#PWD_MAX} characters.</li>
+ *     <li>Must adhere to the complexity rules defined in {@link Constraints#PWD_REGEX}.</li>
+ *   </ul>
+ *   </li>
+ *   <li><strong>First Name:</strong>
+ *   <ul>
+ *     <li>Cannot be {@code null} or blank.</li>
+ *     <li>Cannot exceed {@link Constraints#FIRSTNAME_MAX} characters.</li>
+ *     <li>Must follow the regex pattern defined in {@link Constraints#FIRSTNAME_REGEX}.</li>
+ *   </ul>
+ *   </li>
+ * </ul>
  */
 public record RegisterRequestBody(
         @NotNull(message = ErrorMsg.USERNAME_NOT_PROVIDED)

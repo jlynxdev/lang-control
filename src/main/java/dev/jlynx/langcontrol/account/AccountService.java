@@ -6,6 +6,11 @@ import dev.jlynx.langcontrol.exception.WrongPasswordException;
 import dev.jlynx.langcontrol.exception.UsernameAlreadyExistsException;
 import dev.jlynx.langcontrol.exception.ValuesTheSameException;
 
+/**
+ * Provides an interface for managing {@link Account} entities, including creation, updates,
+ * deletion and retrieval of account data. This service primarily operates on authenticated
+ * users' accounts and enforces rules concerning username uniqueness and password validation.
+ */
 public interface AccountService {
 
     /**
@@ -33,7 +38,7 @@ public interface AccountService {
      *
      * @param body the request body object; usually received from a controller
      * @return an overview summary object of the updated account
-     * @throws WrongPasswordException if the provided values for the current password is incorrect
+     * @throws WrongPasswordException if the provided values for the current password are incorrect
      */
     AccountOverviewResponse changePassword(UpdatePasswordRequest body);
 
