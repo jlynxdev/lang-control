@@ -1,8 +1,8 @@
 package dev.jlynx.langcontrol.util;
 
+import dev.jlynx.langcontrol.account.Account;
 import dev.jlynx.langcontrol.account.AccountRepository;
 import dev.jlynx.langcontrol.exception.AuthenticationNotFoundException;
-import dev.jlynx.langcontrol.account.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

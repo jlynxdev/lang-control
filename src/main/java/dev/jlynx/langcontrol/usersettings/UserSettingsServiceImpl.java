@@ -21,6 +21,12 @@ public class UserSettingsServiceImpl implements UserSettingsService {
         this.userSettingsRepository = userSettingsRepository;
     }
 
+    /**
+     * Retrieves the current user's settings by fetching their {@link UserProfile}
+     * and extracting the associated {@link UserSettings}.
+     *
+     * @return an instance of {@link UserSettingsOverview} containing the current user's settings.
+     */
     @Transactional
     @Override
     public UserSettingsOverview retrieveCurrentUserSettings() {
@@ -29,6 +35,16 @@ public class UserSettingsServiceImpl implements UserSettingsService {
         return UserSettingsOverview.fromEntity(curSettings);
     }
 
+    /**
+     * Updates the current user's settings based on the provided request.
+     *
+     * <p>This method retrieves the current user's {@link UserProfile},
+     * updates the {@link UserSettings} entity with the information from
+     * the {@link UpdateUserSettingsRequest}, and saves the changes to the database.
+     *
+     * @param body a {@link UpdateUserSettingsRequest} containing the new settings to apply
+     * @return a {@link UserSettingsOverview} representing the updated settings
+     */
     @Transactional
     @Override
     public UserSettingsOverview updateCurrentUserSettings(UpdateUserSettingsRequest body) {

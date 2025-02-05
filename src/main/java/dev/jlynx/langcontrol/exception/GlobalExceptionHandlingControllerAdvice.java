@@ -7,6 +7,38 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Global exception handler for the application, providing centralised handling
+ * of exceptions across all controllers using Spring's {@code @RestControllerAdvice}.
+ * <p>
+ * This class maps specific exceptions to custom error responses or HTTP status
+ * codes. It aims to improve error reporting consistency and provide meaningful
+ * feedback to clients.
+ * <p>
+ * Handled exceptions include:
+ * <ul>
+ *   <li>{@link AuthenticationNotFoundException}: Mapped to {@link HttpStatus#UNAUTHORIZED}.</li>
+ *   <li>{@link AccessForbiddenException}: Mapped to {@link HttpStatus#FORBIDDEN}.</li>
+ *   <li>{@link AssetNotFoundException}: Mapped to {@link HttpStatus#NOT_FOUND}.</li>
+ *   <li>{@link MethodArgumentNotValidException}: Mapped to {@link HttpStatus#BAD_REQUEST}.</li>
+ *   <li>{@link ConstraintViolationException}: Mapped to {@link HttpStatus#BAD_REQUEST}.</li>
+ *   <li>{@link IllegalArgumentException}: Mapped to {@link HttpStatus#BAD_REQUEST}.</li>
+ *   <li>{@link IllegalStateException}: Mapped to {@link HttpStatus#BAD_REQUEST}.</li>
+ *   <li>{@link GeneralBadRequestException}: Mapped to {@link HttpStatus#BAD_REQUEST}.</li>
+ *   <li>{@link InvalidDatabaseValueException}: Mapped to {@link HttpStatus#INTERNAL_SERVER_ERROR}.</li>
+ *   <li>{@link UsernameAlreadyExistsException}: Returns {@link HttpStatus#CONFLICT} with {@link ResponseEntity}.</li>
+ *   <li>{@link DeckCreationException}: Mapped to {@link HttpStatus#BAD_REQUEST}.</li>
+ *   <li>{@link OpenaiClientResponseException}: Mapped to {@link HttpStatus#BAD_REQUEST}
+ *       with additional error description.</li>
+ *   <li>{@link DeeplClientResponseException}: Mapped to {@link HttpStatus#BAD_REQUEST}
+ *       with additional error description.</li>
+ *   <li>{@link WrongPasswordException}: Mapped to {@link HttpStatus#FORBIDDEN}
+ *       with a specific error message.</li>
+ * </ul>
+ * <p>
+ * This class utilises {@link ErrorResponseBody} to standardise the output structure
+ * for most error responses, enhancing readability and facilitating debugging for clients.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandlingControllerAdvice {
 

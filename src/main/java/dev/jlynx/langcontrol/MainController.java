@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MainController {
 
     /**
-     * The sole purpose of this empty, bodiless, operation-less is to set
+     * The sole purpose of this empty, bodiless, operation-less endpoint handler is to set
      * the csrf token inside a XSRF-TOKEN cookie.
      *
      * @return {@code ResponseEntity} with OK status code and without body

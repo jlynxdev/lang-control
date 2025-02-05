@@ -1,10 +1,12 @@
 package dev.jlynx.langcontrol.account;
 
-import dev.jlynx.langcontrol.account.dto.*;
+import dev.jlynx.langcontrol.account.dto.AccountOverviewResponse;
+import dev.jlynx.langcontrol.account.dto.DeleteAccountRequest;
+import dev.jlynx.langcontrol.account.dto.UpdateAccountAndUserProfileRequest;
+import dev.jlynx.langcontrol.account.dto.UpdatePasswordRequest;
 import dev.jlynx.langcontrol.auth.dto.RegisterRequestBody;
 import dev.jlynx.langcontrol.exception.AssetNotFoundException;
 import dev.jlynx.langcontrol.exception.UsernameAlreadyExistsException;
-import dev.jlynx.langcontrol.exception.ValuesTheSameException;
 import dev.jlynx.langcontrol.exception.WrongPasswordException;
 import dev.jlynx.langcontrol.role.DefinedRoleValue;
 import dev.jlynx.langcontrol.role.Role;
@@ -138,6 +140,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     // todo: perhaps, in the future, move the implementation of the principalRetriever.retrieveAccount() to this method directly?
+
     /**
      * {@inheritDoc}
      * This particular implementation makes use of the {@link AuthRetriever}.

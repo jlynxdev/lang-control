@@ -5,8 +5,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+/**
+ * Configures various web-related settings for the application.
+ *
+ * <p>This class enables Spring's Data web support, specifically using
+ * {@code PageSerializationMode.VIA_DTO}, and defines custom MVC configurations.
+ *
+ * <p>It provides mappings between specific URL endpoints and their
+ * corresponding static HTML views, ensuring a separation between
+ * backend services and frontend files.
+ *
+ * <ul>
+ *   <li>Uses {@link Configuration} to designate this class as a Spring configuration class.</li>
+ *   <li>Applies {@link EnableSpringDataWebSupport} for enhanced Spring Data web integration.</li>
+ * </ul>
+ */
 @Configuration
 @EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 public class WebConfig {
@@ -19,6 +33,15 @@ public class WebConfig {
 //        return internalResourceViewResolver;
 //    }
 
+    /**
+     * Configures Web MVC for the application.
+     *
+     * <p>Provides custom view controllers that map specific URL paths
+     * to corresponding HTML files using the {@code forward} directive.
+     *
+     * @return a {@link WebMvcConfigurer} that defines view controller mappings
+     * for various endpoints like registration, login and administrative pages.
+     */
     @Bean
     public WebMvcConfigurer webMvcConfigurer() {
         return new WebMvcConfigurer() {

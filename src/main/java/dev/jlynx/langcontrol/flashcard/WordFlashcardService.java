@@ -8,6 +8,10 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service interface for managing word flashcards. Provides methods for creating, retrieving,
+ * updating, deleting, and retrieving spaced repetition forecasts for flashcards.
+ */
 public interface WordFlashcardService {
 
     WordFlashcardOverviewResponse createNewFlashcard(CreateWordFlashcardRequest body);

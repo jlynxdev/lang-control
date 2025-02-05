@@ -3,14 +3,12 @@ package dev.jlynx.langcontrol.auth;
 import dev.jlynx.langcontrol.account.AccountService;
 import dev.jlynx.langcontrol.account.dto.AccountOverviewResponse;
 import dev.jlynx.langcontrol.auth.dto.RegisterRequestBody;
-import dev.jlynx.langcontrol.jwtauth.dto.TokenResponseBody;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  * workflow is in action.
  */
 @RestController
-@RequestMapping("/{apiPref}/auth")
+@RequestMapping("${apiPref}/auth")
 public class FormLoginController {
 
     private static final Logger LOG = LoggerFactory.getLogger(FormLoginController.class);
@@ -34,7 +32,7 @@ public class FormLoginController {
     }
 
     /**
-     * Handles the new account registration post request.
+     * Handles the new account registration POST request.
      *
      * @param body a DTO object which maps to the registration request's body
      */

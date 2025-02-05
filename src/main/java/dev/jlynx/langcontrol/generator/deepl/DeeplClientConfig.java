@@ -5,10 +5,17 @@ import com.deepl.api.TranslatorOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
 
+/**
+ * Configuration class for initialising the DeepL's {@link Translator} client Spring bean.
+ * <p>
+ * This class uses configuration properties and provides a Bean definition for creating
+ * an instance of the {@link Translator} interface to interact with the DeepL API.
+ * The Translator instance is pre-configured with options, such as timeout, retry attempts,
+ * and application information, ensuring consistent behaviour across the application.
+ */
 @Configuration
 public class DeeplClientConfig {
 
@@ -18,14 +25,13 @@ public class DeeplClientConfig {
     @Value("${app.version}")
     private String appVersion;
 
-//    @Bean(name = "deeplWebClient")
-//    public WebClient deeplWebClient() {
-//        return WebClient.builder()
-//                .baseUrl("https://api-free.deepl.com/v2")
-//                .defaultHeader("Authorization", "DeepL-Auth-Key " + deeplApiKey)
-//                .build();
-//    }
-
+    /**
+     * Creates and configures a Spring Bean for the DeepL {@link Translator} client.
+     * This method initialises the {@link Translator} with a specified API key and options,
+     * including timeout duration, retry attempts, and application metadata.
+     *
+     * @return an instance of {@link Translator}, pre-configured to interact with the DeepL API.
+     */
     @Bean
     public Translator deeplClientTranslator() {
         TranslatorOptions options = new TranslatorOptions()
