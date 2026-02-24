@@ -5,7 +5,7 @@ It was developed out of a need to make flashcards a lot less boring and more rel
 It puts simplicity and ease of use at the forefront.
 
 ## ✨ Live demo app ✨
-Feel free to check out the [live demo of the application](https://www.langcontrol.jlynx.dev).
+Feel free to check out the [live demo of the application](https://www.langcontrol.jlynx.dev) (currently inactive).
 
 ## Main features
 
